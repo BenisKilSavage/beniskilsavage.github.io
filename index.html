@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>WEB TÀI XỈU SỐ 1 VIỆT NAM</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f1724;
+      color: #fff;
+      text-align: center;
+      margin: 0;
+      padding: 40px;
+    }
+    h1 {
+      color: gold;
+      margin-bottom: 20px;
+    }
+    .bowl {
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle at 30% 30%, #333, #000);
+      border-radius: 50%;
+      margin: 0 auto;
+      position: relative;
+      box-shadow: inset 0 0 50px rgba(255,255,255,0.1);
+    }
+    .dice {
+      font-size: 70px;
+      position: absolute;
+    }
+    .controls {
+      margin-top: 20px;
+    }
+    input {
+      padding: 8px;
+      width: 160px;
+      font-size: 16px;
+      text-align: center;
+    }
+    select {
+      padding: 8px;
+      font-size: 16px;
+    }
+    button {
+      padding: 12px 24px;
+      font-size: 18px;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      background: gold;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    button:hover {
+      background: orange;
+    }
+    .result {
+      margin-top: 25px;
+      font-size: 22px;
+      font-weight: bold;
+    }
+    .bet-result {
+      margin-top: 15px;
+      font-size: 20px;
+      color: #00ffcc;
+    }
+  </style>
+</head>
+<body>
+  <h1>WEB TÀI XỈU SỐ 1 VIỆT NAM</h1>
+
+  <div class="bowl" id="bowl">
+    <span class="dice" id="d1" style="top:40px; left:60px;">🎲</span>
+    <span class="dice" id="d2" style="top:120px; left:140px;">🎲</span>
+    <span class="dice" id="d3" style="top:180px; left:90px;">🎲</span>
+  </div>
+
+  <div class="controls">
+    <label>Nhập tiền cược (1.000 - 5.000.000): </label>
+    <input type="number" id="bet" min="1000" max="5000000" step="1000" value="1000"> <br><br>
+    <label>Chọn cửa: </label>
+    <select id="choice">
+      <option value="TÀI">TÀI</option>
+      <option value="XỈU">XỈU</option>
+    </select>
+  </div>
+
+  <button onclick="rollDice()">Tung Xúc Xắc</button>
+
+  <div class="result" id="result">Kết quả: ---</div>
+  <div class="bet-result" id="betResult"></div>
+
+  <script>
+    const diceFaces = ["⚀","⚁","⚂","⚃","⚄","⚅"];
+
+    function getRandomFace() {
+      return Math.floor(Math.random() * 6);
+    }
+
+    function rollDice() {
+      let bet = parseInt(document.getElementById("bet").value);
+      if (isNaN(bet) || bet < 1000 || bet > 5000000) {
+        alert("Vui lòng nhập số tiền cược hợp lệ (1.000 - 5.000.000)!");
+        return;
+      }
+      document.getElementById("result").textContent = "Đang tung...";
+      document.getElementById("betResult").textContent = "";
+      let d1, d2, d3;
+      let times = 15; // số lần đổi mặt xúc xắc
+      let interval = setInterval(() => {
+        d1 = getRandomFace();
+        d2 = getRandomFace();
+        d3 = getRandomFace();
+        document.getElementById("d1").textContent = diceFaces[d1];
+        document.getElementById("d2").textContent = diceFaces[d2];
+        document.getElementById("d3").textContent = diceFaces[d3];
+        times--;
+        if(times <= 0){
+          clearInterval(interval);
+          showResult(d1+1, d2+1, d3+1, bet);
+        }
+      }, 150);
+    }
+
+    function showResult(a,b,c, bet){
+      let sum = a+b+c;
+      let result = (sum >= 11) ? "TÀI" : "XỈU";
+      document.getElementById("result").textContent =
+        `Kết quả: ${a} + ${b} + ${c} = ${sum} ⇒ ${result}`;
+
+      let choice = document.getElementById("choice").value;
+      if(choice === result){
+        document.getElementById("betResult").textContent = 
+          `🎉 Bạn đã THẮNG! Nhận được ${bet*2} VNĐ`;
+      } else {
+        document.getElementById("betResult").textContent = 
+          `😢 Bạn đã THUA! Mất ${bet} VNĐ`;
+      }
+    }
+  </script>
+</body>
+</html>
